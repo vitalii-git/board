@@ -36,10 +36,27 @@ Route::group([
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
+    // Boards
     Route::get('board', 'BoardController@index');
     Route::post('board', 'BoardController@store');
     Route::get('board/{board}', 'BoardController@show');
     Route::put('board/{board}', 'BoardController@update');
     Route::delete('board/{board}', 'BoardController@destroy');
+
+    // Tasks
+    Route::get('task', 'TaskController@index');
+    Route::post('task', 'TaskController@store');
+    Route::get('task/{task}', 'TaskController@show');
+    Route::put('task/{task}', 'TaskController@update');
+    Route::delete('task/{task}', 'TaskController@destroy');
+
+    // Statuses
+    Route::get('status', 'StatusController@index');
+    Route::post('status', 'StatusController@store');
+    Route::get('status/{status}', 'StatusController@show');
+    Route::put('status/{status}', 'StatusController@update');
+    Route::delete('status/{status}', 'StatusController@destroy');
+
+
 });
 

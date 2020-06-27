@@ -4,11 +4,10 @@
 namespace App\Repositories;
 
 
-use App\Board;
-use App\Interfaces\Repositories\BoardRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
+use App\Interfaces\Repositories\StatusRepositoryInterface;
+use App\Status;
 
-class BoardRepository implements BoardRepositoryInterface
+class StatusRepository implements StatusRepositoryInterface
 {
 
     /**
@@ -16,7 +15,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function index()
     {
-        return Board::all();
+        return Status::all();
     }
 
     /**
@@ -25,9 +24,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function store(array $data)
     {
-        $data['user_id'] = Auth::user()->id;
-
-        return Board::create($data);
+        return Status::create($data);
     }
 
     /**
@@ -36,7 +33,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function show(int $id)
     {
-        return Board::find($id);
+        return Status::find($id);
     }
 
     /**
@@ -46,9 +43,9 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function update(array $data, int $id)
     {
-        $board = Board::find($id);
+        $status = Status::find($id);
 
-        return tap($board)->update($data);
+        return tap($status)->update($data);
     }
 
     /**
@@ -57,7 +54,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function destroy(int $id)
     {
-        return Board::where('id', $id)->delete();
+        return Status::where('id', $id)->delete();
     }
 
 }

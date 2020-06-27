@@ -4,11 +4,10 @@
 namespace App\Repositories;
 
 
-use App\Board;
-use App\Interfaces\Repositories\BoardRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
+use App\Interfaces\Repositories\TaskRepositoryInterface;
+use App\Task;
 
-class BoardRepository implements BoardRepositoryInterface
+class TaskRepository implements TaskRepositoryInterface
 {
 
     /**
@@ -16,7 +15,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function index()
     {
-        return Board::all();
+        return Task::all();
     }
 
     /**
@@ -25,9 +24,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function store(array $data)
     {
-        $data['user_id'] = Auth::user()->id;
-
-        return Board::create($data);
+        return Task::create($data);
     }
 
     /**
@@ -36,7 +33,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function show(int $id)
     {
-        return Board::find($id);
+        return Task::find($id);
     }
 
     /**
@@ -46,9 +43,9 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function update(array $data, int $id)
     {
-        $board = Board::find($id);
+        $task = Task::find($id);
 
-        return tap($board)->update($data);
+        return tap($task)->update($data);
     }
 
     /**
@@ -57,7 +54,7 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function destroy(int $id)
     {
-        return Board::where('id', $id)->delete();
+        return Task::where('id', $id)->delete();
     }
 
 }

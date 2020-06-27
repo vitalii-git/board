@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Board\StoreRequest;
 use App\Http\Requests\Board\UpdateRequest;
-use App\Http\Resources\Board\DestroyResource;
 use App\Http\Resources\Board\IndexResource;
 use App\Http\Resources\Board\ShowResource;
 use App\Http\Resources\Board\StoreResource;
 use App\Http\Resources\Board\UpdateResource;
 use App\Interfaces\Repositories\BoardRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 
 class BoardController extends Controller
 {
@@ -78,7 +78,7 @@ class BoardController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return DestroyResource
+     * @return JsonResponse
      */
     public function destroy($id)
     {

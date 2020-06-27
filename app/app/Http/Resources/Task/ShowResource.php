@@ -14,6 +14,8 @@ class ShowResource extends JsonResource
      */
     public function toArray($request)
     {
+        $this->resource->load('board', 'status', 'labels');
+
         return parent::toArray($request);
     }
 }

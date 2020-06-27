@@ -26,7 +26,11 @@ class StoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'description' => 'sometimes|string'
+            'description' => 'sometimes|string',
+            'status_id' => 'required|exists:statuses,id',
+            'board_id' => 'required|exists:boards,id',
+            'labels' => 'sometimes|required|array|min:1',
+            'labels.*' => 'exists:labels,id|distinct'
         ];
     }
 }

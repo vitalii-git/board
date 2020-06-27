@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Task\StoreRequest;
 use App\Http\Requests\Task\UpdateRequest;
-use App\Http\Resources\Board\ShowResource;
-use App\Http\Resources\Board\StoreResource;
+use App\Http\Resources\Task\ShowResource;
+use App\Http\Resources\Task\StoreResource;
 use App\Http\Resources\Task\IndexResource;
 use App\Http\Resources\Task\UpdateResource;
 use App\Interfaces\Repositories\TaskRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 
 class TaskController extends Controller
 {
@@ -34,12 +35,12 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param StoreRequest $request
      * @return StoreResource
      */
     public function store(StoreRequest $request)
     {
-        $data = $request->only(['title', 'description', 'board_id']);
+        $data = $request->only(['title', 'description', 'board_id', 'status_id', 'labels']);
         $task = $this->taskRepository->store($data);
 
         return new StoreResource($task);
@@ -67,7 +68,7 @@ class TaskController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->only(['title', 'description', 'board_id']);
+        $data = $request->only(['title', 'description', 'board_id', 'status_id', 'labels']);
         $task = $this->taskRepository->update($data, $id);
 
         return new UpdateResource($task);
@@ -77,7 +78,7 @@ class TaskController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy($id)
     {

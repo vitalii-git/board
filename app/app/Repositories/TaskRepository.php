@@ -24,7 +24,11 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function store(array $data)
     {
-        return Task::create($data);
+        $task = Task::create($data);
+        $task->labels()->sync($data['labels']);
+        $task->save();
+
+        return $task;
     }
 
     /**
@@ -44,8 +48,10 @@ class TaskRepository implements TaskRepositoryInterface
     public function update(array $data, int $id)
     {
         $task = Task::find($id);
+        $task->labels()->sync($data['labels']);
+        $task->update($data);
 
-        return tap($task)->update($data);
+        return $task;
     }
 
     /**

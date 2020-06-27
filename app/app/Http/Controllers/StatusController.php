@@ -7,7 +7,7 @@ use App\Http\Requests\Status\UpdateRequest;
 use App\Http\Resources\Status\IndexResource;
 use App\Http\Resources\Status\StoreResource;
 use App\Http\Resources\Status\UpdateResource;
-use App\Http\Resources\Task\ShowResource;
+use App\Http\Resources\Status\ShowResource;
 use App\Interfaces\Repositories\StatusRepositoryInterface;
 
 class StatusController extends Controller

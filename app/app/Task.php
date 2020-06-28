@@ -27,4 +27,18 @@ class Task extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function scopeFilterByLabels($query, array $id)
+    {
+        return $query->whereHas('labels', function ($q) use ($id) {
+            $q->whereIn('label_id', $id);
+        });
+    }
+
+    public function scopeFilterByStatus($query, $id)
+    {
+        return $query->whereHas('status', function ($q) use ($id) {
+            $q->where('id', $id);
+        });
+    }
 }

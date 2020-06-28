@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Task\IndexRequest;
 use App\Http\Requests\Task\StoreRequest;
 use App\Http\Requests\Task\UpdateRequest;
 use App\Http\Resources\Task\ShowResource;
@@ -23,11 +24,13 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param IndexRequest $request
      * @return IndexResource
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
-        $tasks = $this->taskRepository->index();
+        $data = $request->only(['status', 'labels']);
+        $tasks = $this->taskRepository->index($data);
 
         return new IndexResource($tasks);
     }

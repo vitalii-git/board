@@ -11,11 +11,22 @@ class TaskRepository implements TaskRepositoryInterface
 {
 
     /**
+     * @param array $data
      * @return mixed
      */
-    public function index()
+    public function index(array $data)
     {
-        return Task::all();
+        $tasks = Task::where('id', '<>', 0);
+
+        if (isset($data['status']) && $data['status']) {
+            $tasks->filterByStatus($data['status']);
+        }
+        if (isset($data['labels']) && $data['labels']) {
+            $data['labels'] = is_array($data['labels']) ? $data['labels'] : explode(',', $data['labels']);
+            $tasks->filterByLabels($data['labels']);
+        }
+
+        return $tasks->get();
     }
 
     /**

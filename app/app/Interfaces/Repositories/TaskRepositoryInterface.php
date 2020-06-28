@@ -6,7 +6,7 @@ namespace App\Interfaces\Repositories;
 
 interface TaskRepositoryInterface
 {
-    public function index();
+    public function index(array $data);
 
     public function store(array $data);
 

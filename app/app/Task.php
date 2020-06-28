@@ -28,6 +28,11 @@ class Task extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
+
     public function scopeFilterByLabels($query, array $id)
     {
         return $query->whereHas('labels', function ($q) use ($id) {

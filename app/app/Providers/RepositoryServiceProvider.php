@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Interfaces\Repositories\BoardRepositoryInterface;
+use App\Interfaces\Repositories\ImageRepositoryInterface;
 use App\Interfaces\Repositories\LabelRepositoryInterface;
 use App\Interfaces\Repositories\StatusRepositoryInterface;
 use App\Interfaces\Repositories\TaskRepositoryInterface;
 use App\Repositories\BoardRepository;
+use App\Repositories\ImageRepository;
 use App\Repositories\LabelRepository;
 use App\Repositories\StatusRepository;
 use App\Repositories\TaskRepository;
@@ -39,6 +41,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             LabelRepositoryInterface::class,
             LabelRepository::class
+        );
+
+        $this->app->bind(
+            ImageRepositoryInterface::class,
+            ImageRepository::class
         );
     }
 

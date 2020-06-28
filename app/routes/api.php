@@ -57,6 +57,8 @@ Route::group([
     Route::put('status/{status}', 'StatusController@update');
     Route::delete('status/{status}', 'StatusController@destroy');
 
-
+    // Images
+    Route::post('image', 'ImageController@store');
+    Route::delete('image/{image}', 'ImageController@destroy');
 });
 

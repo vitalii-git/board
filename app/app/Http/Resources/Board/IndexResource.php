@@ -14,6 +14,7 @@ class IndexResource extends JsonResource
      */
     public function toArray($request)
     {
+        $this->resource->load('tasks', 'tasks.labels', 'tasks.status', 'tasks.images');
         return parent::toArray($request);
     }
 }

@@ -10,6 +10,7 @@ use App\Image;
 use App\Interfaces\Repositories\ImageRepositoryInterface;
 use App\Log;
 use App\Task;
+use Illuminate\Support\Facades\Auth;
 
 class ImageRepository implements ImageRepositoryInterface
 {
@@ -35,7 +36,8 @@ class ImageRepository implements ImageRepositoryInterface
      */
     public function destroy(int $id)
     {
-        if ($image = Image::find($id)) {
+        $image = Image::find($id);
+        if (Auth::user()->can('delete', $image)) {
             $imageService = ImageDriverFactory::createImageDriver(env('IMAGE_DRIVER'));
             $imageService->destroy($image);
 
@@ -43,8 +45,7 @@ class ImageRepository implements ImageRepositoryInterface
             event(new TaskEvent($task, Log::ACTION_IMAGE_DESTROY));
             $image->delete();
         }
-
-        return true;
+        return false;
     }
 
 }

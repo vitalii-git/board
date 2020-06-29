@@ -15,6 +15,10 @@ $ cd app/
 ```
 $ composer install
 ```
+- Generate app key
+```
+$ php artisan key:generate
+```
 - Run migrations
 ```
 $ php artisan migrate

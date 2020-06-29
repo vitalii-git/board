@@ -60,7 +60,6 @@ services:
       MONGO_INITDB_DATABASE: laravel
     volumes:
     - ./mongodbdata:/data/db/
-    - ./mongodb/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ports:
       - 27017:27017
     logging:

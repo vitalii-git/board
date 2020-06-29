@@ -57,7 +57,12 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function destroy(int $id)
     {
-        return Board::where('id', $id)->delete();
+        $board = Board::find($id);
+
+        if ($status = Auth::user()->can('delete', $board)) {
+            return $board->delete();
+        }
+        return false;
     }
 
 }

@@ -46,9 +46,11 @@ class LabelRepository implements LabelRepositoryInterface
     public function update(array $data, int $id)
     {
         $label = Label::find($id);
-        $data['user_id'] = Auth::user()->id;
-
-        return tap($label)->update($data);
+        if (Auth::user()->can('update', $label)) {
+            $data['user_id'] = Auth::user()->id;
+            return tap($label)->update($data);
+        }
+        return false;
     }
 
     /**
@@ -57,7 +59,11 @@ class LabelRepository implements LabelRepositoryInterface
      */
     public function destroy(int $id)
     {
-        return Label::where('id', $id)->delete();
+        $label = Label::find($id);
+        if (Auth::user()->can('delete', $label)) {
+            return Label::where('id', $id)->delete();
+        }
+        return false;
     }
 
 }

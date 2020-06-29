@@ -71,7 +71,9 @@ class BoardController extends Controller
         $data = $request->only('name');
         $board = $this->boardRepository->update($data, $id);
 
-        return new UpdateResource($board);
+        return !$board ?
+            response()->json(['message' => 'Access denied']) :
+            new UpdateResource($board);
     }
 
     /**
@@ -82,8 +84,10 @@ class BoardController extends Controller
      */
     public function destroy($id)
     {
-        $this->boardRepository->destroy($id);
+        $destroy = $this->boardRepository->destroy($id);
 
-        return response()->json(['message' => 'Board was deleted'], 200);
+        return !$destroy ?
+            response()->json(['message' => 'Access denied']) :
+            response()->json(['message' => 'Board was deleted'], 200);
     }
 }

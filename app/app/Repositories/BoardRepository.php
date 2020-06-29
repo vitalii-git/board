@@ -47,8 +47,10 @@ class BoardRepository implements BoardRepositoryInterface
     public function update(array $data, int $id)
     {
         $board = Board::find($id);
-
-        return tap($board)->update($data);
+        if (Auth::user()->can('update', $board)) {
+            return tap($board)->update($data);
+        }
+        return false;
     }
 
     /**

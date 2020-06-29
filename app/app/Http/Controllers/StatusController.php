@@ -39,7 +39,7 @@ class StatusController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $data = $request->only(['name']);
+        $data = $request->validated();
         $status = $this->statusRepository->store($data);
 
         return new StoreResource($status);
@@ -67,7 +67,7 @@ class StatusController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->only(['name']);
+        $data = $request->validated();
         $status = $this->statusRepository->update($data, $id);
 
         return new UpdateResource($status);

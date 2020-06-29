@@ -40,7 +40,7 @@ class LabelController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $data = $request->only(['name']);
+        $data = $request->validated();
         $label = $this->labelRepository->store($data);
 
         return new StoreResource($label);
@@ -68,7 +68,7 @@ class LabelController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->only(['name']);
+        $data = $request->validated();
         $label = $this->labelRepository->update($data, $id);
 
         return !$label ?

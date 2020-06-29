@@ -29,7 +29,7 @@ class TaskController extends Controller
      */
     public function index(IndexRequest $request)
     {
-        $data = $request->only(['status', 'labels']);
+        $data = $request->validated();
         $tasks = $this->taskRepository->index($data);
 
         return new IndexResource($tasks);
@@ -43,7 +43,7 @@ class TaskController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $data = $request->only(['title', 'description', 'board_id', 'status_id', 'labels']);
+        $data = $request->validated();
         $task = $this->taskRepository->store($data);
 
         return new StoreResource($task);
@@ -71,7 +71,7 @@ class TaskController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->only(['title', 'description', 'board_id', 'status_id', 'labels']);
+        $data = $request->validated();
         $task = $this->taskRepository->update($data, $id);
 
         return new UpdateResource($task);

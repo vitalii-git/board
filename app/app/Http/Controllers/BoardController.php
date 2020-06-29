@@ -40,7 +40,7 @@ class BoardController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $data = $request->only('name');
+        $data = $request->validated();
         $board = $this->boardRepository->store($data);
 
         return new StoreResource($board);
@@ -68,7 +68,7 @@ class BoardController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->only('name');
+        $data = $request->validated();
         $board = $this->boardRepository->update($data, $id);
 
         return !$board ?

@@ -15,7 +15,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./php/mongo.ini:/usr/local/etc/php/conf.d/mongo.ini
     networks:
       - kd-network
   #Nginx Service
@@ -50,6 +50,24 @@ services:
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - kd-network
+  #MongoDB Service
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: laravel
+    volumes:
+    - ./mongodbdata:/data/db/
+    - ./mongodb/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - 27017:27017
+    logging:
+      driver: none
+    networks:
+      - kd-network
+  #PHPMyAdmin
   phpmadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin

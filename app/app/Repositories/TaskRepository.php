@@ -4,11 +4,15 @@
 namespace App\Repositories;
 
 
+use App\Events\TaskEvent;
 use App\Interfaces\Repositories\TaskRepositoryInterface;
+use App\Log;
 use App\Task;
+use App\Traits\TaskEventTrait;
 
 class TaskRepository implements TaskRepositoryInterface
 {
+    use TaskEventTrait;
 
     /**
      * @param array $data
@@ -38,6 +42,7 @@ class TaskRepository implements TaskRepositoryInterface
         $task = Task::create($data);
         $task->labels()->sync($data['labels']);
         $task->save();
+        event(new TaskEvent($task, Log::ACTION_STORE));
 
         return $task;
     }
@@ -61,6 +66,7 @@ class TaskRepository implements TaskRepositoryInterface
         $task = Task::find($id);
         $task->labels()->sync($data['labels']);
         $task->update($data);
+        $this->logTaskEvents($task);
 
         return $task;
     }
@@ -71,7 +77,10 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function destroy(int $id)
     {
-        return Task::where('id', $id)->delete();
+        $task = Task::find($id);
+        event(new TaskEvent($task, Log::ACTION_DESTROY));
+
+        return $task->delete();
     }
 
 }

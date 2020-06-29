@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         \App\Providers\RepositoryServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Jenssegers\Mongodb\MongodbServiceProvider::class,
 
         /*
          * Package Service Providers...

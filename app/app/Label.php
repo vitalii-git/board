@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Label extends Model
 {
     protected $fillable = [
-        'name'
+        'name',
+        'user_id'
     ];
 }

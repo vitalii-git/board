@@ -10,6 +10,8 @@ class Log extends Model
 {
     const ACTION_STORE = 'Task created.';
     const ACTION_DESTROY = 'Task destroyed.';
+    const ACTION_IMAGE_STORE = 'Task image created.';
+    const ACTION_IMAGE_DESTROY = 'Task image destroyed.';
 
     protected $collection = 'logs';
 

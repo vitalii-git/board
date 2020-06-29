@@ -4,8 +4,11 @@
 namespace App\Repositories;
 
 
+use App\Events\TaskEvent;
 use App\Image;
 use App\Interfaces\Repositories\ImageRepositoryInterface;
+use App\Log;
+use App\Task;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -31,7 +34,9 @@ class ImageRepository implements ImageRepositoryInterface
         $data['desktop_url'] = $desktopName;
         $data['mobile_url'] = $mobileName;
 
-        return Image::create($data);
+        Image::create($data);
+        $task = Task::find($data['task_id']);
+        event(new TaskEvent($task, Log::ACTION_IMAGE_STORE));
     }
 
     /**
@@ -47,7 +52,9 @@ class ImageRepository implements ImageRepositoryInterface
             if (Storage::disk('tasks')->exists($image->mobile_url)) {
                 Storage::disk('tasks')->delete($image->mobile_url);
             }
-            return $image->delete();
+            $task = Task::find($image->task_id);
+            event(new TaskEvent($task, Log::ACTION_IMAGE_DESTROY));
+            $image->delete();
         }
 
         return true;

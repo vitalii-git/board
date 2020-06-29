@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Interfaces\Repositories\LabelRepositoryInterface;
 use App\Label;
+use Illuminate\Support\Facades\Auth;
 
 class LabelRepository implements LabelRepositoryInterface
 {
@@ -24,6 +25,7 @@ class LabelRepository implements LabelRepositoryInterface
      */
     public function store(array $data)
     {
+        $data['user_id'] = Auth::user()->id;
         return Label::create($data);
     }
 
@@ -44,6 +46,7 @@ class LabelRepository implements LabelRepositoryInterface
     public function update(array $data, int $id)
     {
         $label = Label::find($id);
+        $data['user_id'] = Auth::user()->id;
 
         return tap($label)->update($data);
     }

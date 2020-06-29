@@ -6,6 +6,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Http\Resources\Auth\LoginResource;
 use App\Http\Resources\Auth\SignUpResource;
+use App\Http\Resources\Auth\UserResource;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -68,10 +69,10 @@ class AuthController extends Controller
      * Get the authenticated User
      *
      * @param Request $request
-     * @return JsonResponse [json] user object
+     * @return UserResource
      */
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return new UserResource($request->user());
     }
 }

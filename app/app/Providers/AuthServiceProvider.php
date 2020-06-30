@@ -8,6 +8,8 @@ use App\Label;
 use App\Policies\BoardPolicy;
 use App\Policies\ImagePolicy;
 use App\Policies\LabelPolicy;
+use App\Policies\TaskPolicy;
+use App\Task;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         Board::class => BoardPolicy::class,
         Image::class => ImagePolicy::class,
         Label::class => LabelPolicy::class,
+        Task::class => TaskPolicy::class,
     ];
 
     /**

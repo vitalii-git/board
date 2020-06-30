@@ -71,10 +71,14 @@ class TaskController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->validated();
-        $task = $this->taskRepository->update($data, $id);
+        try {
+            $data = $request->validated();
+            $task = $this->taskRepository->update($data, $id);
 
-        return new UpdateResource($task);
+            return new UpdateResource($task);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -85,8 +89,11 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $this->taskRepository->destroy($id);
-
-        return response()->json(['message' => 'Task was deleted'], 200);
+        try {
+            $this->taskRepository->destroy($id);
+            return response()->json(['message' => 'Task was deleted']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 }

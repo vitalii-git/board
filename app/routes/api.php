@@ -50,6 +50,13 @@ Route::group([
     Route::put('task/{task}', 'TaskController@update');
     Route::delete('task/{task}', 'TaskController@destroy');
 
+    // Labels
+    Route::get('label', 'LabelController@index');
+    Route::post('label', 'LabelController@store');
+    Route::get('label/{label}', 'LabelController@show');
+    Route::put('label/{label}', 'LabelController@update');
+    Route::delete('label/{label}', 'LabelController@destroy');
+
     // Statuses
     Route::get('status', 'StatusController@index');
     Route::post('status', 'StatusController@store');

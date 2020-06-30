@@ -41,10 +41,11 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        $destroy = $this->imageRepository->destroy($id);
-
-        return !$destroy ?
-            response()->json(['message' => 'Access denied']) :
-            response()->json(['message' => 'Success'], 200);
+        try {
+            $this->imageRepository->destroy($id);
+            return response()->json(['message' => 'Success']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 }

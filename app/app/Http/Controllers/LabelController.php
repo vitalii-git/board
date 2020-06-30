@@ -68,12 +68,13 @@ class LabelController extends Controller
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->validated();
-        $label = $this->labelRepository->update($data, $id);
-
-        return !$label ?
-            response()->json(['message' => 'Access denied']) :
-            new UpdateResource($label);
+        try {
+            $data = $request->validated();
+            $label = $this->labelRepository->update($data, $id);
+            return new UpdateResource($label);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -84,10 +85,11 @@ class LabelController extends Controller
      */
     public function destroy($id)
     {
-        $destroy = $this->labelRepository->destroy($id);
-
-        return !$destroy ?
-            response()->json(['message' => 'Access deniedn']) :
-            response()->json(['message' => 'Label was deleted'], 200);
+        try {
+            $this->labelRepository->destroy($id);
+            return response()->json(['message' => 'Label deleted']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 }

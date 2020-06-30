@@ -43,6 +43,7 @@ class BoardRepository implements BoardRepositoryInterface
      * @param array $data
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function update(array $data, int $id)
     {
@@ -50,21 +51,21 @@ class BoardRepository implements BoardRepositoryInterface
         if (Auth::user()->can('update', $board)) {
             return tap($board)->update($data);
         }
-        return false;
+        throw new \Exception('Access denied');
     }
 
     /**
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
         $board = Board::find($id);
-
         if ($status = Auth::user()->can('delete', $board)) {
             return $board->delete();
         }
-        return false;
+        throw new \Exception('Access denied');
     }
 
 }

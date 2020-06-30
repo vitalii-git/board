@@ -42,6 +42,7 @@ class LabelRepository implements LabelRepositoryInterface
      * @param array $data
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function update(array $data, int $id)
     {
@@ -50,20 +51,21 @@ class LabelRepository implements LabelRepositoryInterface
             $data['user_id'] = Auth::user()->id;
             return tap($label)->update($data);
         }
-        return false;
+        throw new \Exception('Access denied');
     }
 
     /**
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
         $label = Label::find($id);
         if (Auth::user()->can('delete', $label)) {
-            return Label::where('id', $id)->delete();
+            return $label->delete();
         }
-        return false;
+        throw new \Exception('Access denied');
     }
 
 }

@@ -33,6 +33,7 @@ class ImageRepository implements ImageRepositoryInterface
     /**
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
@@ -43,9 +44,9 @@ class ImageRepository implements ImageRepositoryInterface
 
             $task = Task::find($image->task_id);
             event(new TaskEvent($task, Log::ACTION_IMAGE_DESTROY));
-            $image->delete();
+            return $image->delete();
         }
-        return false;
+        throw new \Exception('Access denied');
     }
 
 }

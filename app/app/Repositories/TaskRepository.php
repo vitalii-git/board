@@ -9,6 +9,7 @@ use App\Interfaces\Repositories\TaskRepositoryInterface;
 use App\Log;
 use App\Task;
 use App\Traits\TaskEventTrait;
+use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -60,27 +61,34 @@ class TaskRepository implements TaskRepositoryInterface
      * @param array $data
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function update(array $data, int $id)
     {
         $task = Task::find($id);
-        $task->labels()->sync($data['labels']);
-        $task->update($data);
-        $this->logTaskEvents($task);
+        if (Auth::user()->can('update', $task)) {
+            $task->labels()->sync($data['labels']);
+            $task->update($data);
+            $this->logTaskEvents($task);
 
-        return $task;
+            return $task;
+        }
+        throw new \Exception('Access denied');
     }
 
     /**
      * @param int $id
      * @return mixed
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
         $task = Task::find($id);
-        event(new TaskEvent($task, Log::ACTION_DESTROY));
-
-        return $task->delete();
+        if (Auth::user()->can('delete', $task)) {
+            event(new TaskEvent($task, Log::ACTION_DESTROY));
+            return $task->delete();
+        }
+        throw new \Exception('Access denied');
     }
 
 }

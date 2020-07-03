@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Board;
+namespace App\Http\Resources\Label;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class StoreResource extends JsonResource
+class LabelResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +14,13 @@ class StoreResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        if (is_null($this->resource)) {
+            return [];
+        }
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
     }
 }

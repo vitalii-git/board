@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Image\StoreRequest;
-use App\Interfaces\Repositories\ImageRepositoryInterface;
+use App\Image;
 use App\Jobs\ProcessImage;
+use App\Services\ImageService;
+use Illuminate\Http\Request;
 
 class ImageController extends Controller
 {
-    private $imageRepository;
+    private $imageService;
 
-    public function __construct(ImageRepositoryInterface $imageRepository)
+    public function __construct(ImageService $imageService)
     {
-        $this->imageRepository = $imageRepository;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -27,7 +29,7 @@ class ImageController extends Controller
         $data['user_id'] = $request->user()->id;
         $file = base64_encode(file_get_contents($request->file('image')));
 
-        $processImageJob = new ProcessImage($this->imageRepository, $data, $file);
+        $processImageJob = new ProcessImage($this->imageService, $data, $file);
         $this->dispatch($processImageJob);
 
         return response()->json(['message' => 'Success'], 200);
@@ -36,16 +38,16 @@ class ImageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param Image $image
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(Request $request, Image $image)
     {
-        try {
-            $this->imageRepository->destroy($id);
-            return response()->json(['message' => 'Success']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
-        }
+        $this->authorize('delete', $image);
+        $this->imageService->destroy($image->id);
+
+        return response()->json(['message' => 'Success']);
     }
 }

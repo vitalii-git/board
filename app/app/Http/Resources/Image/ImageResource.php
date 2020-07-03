@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Auth;
+namespace App\Http\Resources\Image;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class ImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,14 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+        if (is_null($this->resource)) {
+            return [];
+        }
+
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email
+            'desktop_url' => $this->desktop_url,
+            'mobile_url' => $this->mobile_url,
         ];
     }
 }

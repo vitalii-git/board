@@ -1,17 +1,17 @@
 <?php
 
 
-namespace App\Repositories;
+namespace App\Services;
 
 
 use App\Events\TaskEvent;
-use App\Interfaces\Repositories\TaskRepositoryInterface;
 use App\Log;
 use App\Task;
 use App\Traits\TaskEventTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-class TaskRepository implements TaskRepositoryInterface
+class TaskService
 {
     use TaskEventTrait;
 
@@ -31,7 +31,7 @@ class TaskRepository implements TaskRepositoryInterface
             $tasks->filterByLabels($data['labels']);
         }
 
-        return $tasks->get();
+        return $tasks->own(Auth::user()->id)->paginate();
     }
 
     /**
@@ -40,12 +40,20 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function store(array $data)
     {
-        $task = Task::create($data);
-        $task->labels()->sync($data['labels']);
-        $task->save();
-        event(new TaskEvent($task, Log::ACTION_STORE));
+        try {
+            DB::beginTransaction();
+            $task = Task::create($data);
+            $task->labels()->sync($data['labels']);
+            $task->save();
+            DB::commit();
 
-        return $task;
+            event(new TaskEvent($task, Log::ACTION_STORE));
+
+            return $task;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return null;
+        }
     }
 
     /**
@@ -54,7 +62,7 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function show(int $id)
     {
-        return Task::find($id);
+        return Task::own(Auth::user()->id)->find($id);
     }
 
     /**
@@ -65,15 +73,20 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function update(array $data, int $id)
     {
-        $task = Task::find($id);
-        if (Auth::user()->can('update', $task)) {
+        try {
+            DB::beginTransaction();
+            $task = Task::findOrFail($id);
             $task->labels()->sync($data['labels']);
             $task->update($data);
-            $this->logTaskEvents($task);
+            DB::commit();
+
+            $this->logTaskEvents();
 
             return $task;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return null;
         }
-        throw new \Exception('Access denied');
     }
 
     /**
@@ -83,12 +96,16 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function destroy(int $id)
     {
-        $task = Task::find($id);
-        if (Auth::user()->can('delete', $task)) {
+        try {
+            DB::beginTransaction();
+            $task = Task::findOrFail($id);
             event(new TaskEvent($task, Log::ACTION_DESTROY));
-            return $task->delete();
-        }
-        throw new \Exception('Access denied');
-    }
+            DB::commit();
 
+            return $task->delete();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return null;
+        }
+    }
 }

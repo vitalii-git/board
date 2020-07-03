@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Board extends Model
 {
     protected $fillable = [
-        'name', 'user_id'
+        'name',
+        'user_id'
     ];
 
     public function tasks()
@@ -18,5 +19,10 @@ class Board extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeOwn($query, $userId)
+    {
+        return $query->where('user_id', $userId);
     }
 }

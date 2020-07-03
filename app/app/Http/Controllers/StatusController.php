@@ -4,58 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Status\StoreRequest;
 use App\Http\Requests\Status\UpdateRequest;
-use App\Http\Resources\Status\IndexResource;
-use App\Http\Resources\Status\StoreResource;
-use App\Http\Resources\Status\UpdateResource;
-use App\Http\Resources\Status\ShowResource;
-use App\Interfaces\Repositories\StatusRepositoryInterface;
+use App\Http\Resources\Status\StatusCollection;
+use App\Http\Resources\Status\StatusResource;
+use App\Services\StatusService;
 
 class StatusController extends Controller
 {
-    private $statusRepository;
+    private $statusService;
 
-    public function __construct(StatusRepositoryInterface $statusRepository)
+    public function __construct(StatusService $statusService)
     {
-        $this->statusRepository = $statusRepository;
+        $this->statusService = $statusService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return IndexResource
+     * @return StatusCollection
      */
     public function index()
     {
-        $statuses = $this->statusRepository->index();
+        $statuses = $this->statusService->index();
 
-        return new IndexResource($statuses);
+        return new StatusCollection($statuses);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param StoreRequest $request
-     * @return StoreResource
+     * @return StatusResource
      */
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $status = $this->statusRepository->store($data);
+        $status = $this->statusService->store($data);
 
-        return new StoreResource($status);
+        return new StatusResource($status);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return ShowResource
+     * @return StatusResource
      */
     public function show($id)
     {
-        $status = $this->statusRepository->show($id);
+        $status = $this->statusService->show($id);
 
-        return new ShowResource($status);
+        return new StatusResource($status);
     }
 
     /**
@@ -63,14 +61,14 @@ class StatusController extends Controller
      *
      * @param UpdateRequest $request
      * @param int $id
-     * @return UpdateResource
+     * @return StatusResource
      */
     public function update(UpdateRequest $request, $id)
     {
         $data = $request->validated();
-        $status = $this->statusRepository->update($data, $id);
+        $status = $this->statusService->update($data, $id);
 
-        return new UpdateResource($status);
+        return new StatusResource($status);
     }
 
     /**
@@ -81,7 +79,7 @@ class StatusController extends Controller
      */
     public function destroy($id)
     {
-        $this->statusRepository->destroy($id);
+        $this->statusService->destroy($id);
 
         return response()->json(['message' => 'Status was deleted'], 200);
     }

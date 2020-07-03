@@ -31,7 +31,7 @@ class TaskPolicy
      */
     public function view(User $user, Task $task)
     {
-        //
+        return $user->id === $task->board()->first()->user_id;
     }
 
     /**
@@ -54,9 +54,7 @@ class TaskPolicy
      */
     public function update(User $user, Task $task)
     {
-        return $user->id === $task->board()->first()->user_id ?
-            Response::allow() :
-            Response::deny('Access denied');
+        return $user->id === $task->board()->first()->user_id;
     }
 
     /**
@@ -68,9 +66,7 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task)
     {
-        return $user->id === $task->board()->first()->user_id ?
-            Response::allow() :
-            Response::deny('Access denied');
+        return $user->id === $task->board()->first()->user_id;
     }
 
     /**

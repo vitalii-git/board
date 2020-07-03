@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Task;
+namespace App\Http\Resources\Status;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UpdateResource extends JsonResource
+class StatusResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,8 +14,13 @@ class UpdateResource extends JsonResource
      */
     public function toArray($request)
     {
-        $this->resource->load('board', 'status', 'labels');
+        if (is_null($this->resource)) {
+            return [];
+        }
 
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
     }
 }

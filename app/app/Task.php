@@ -46,4 +46,9 @@ class Task extends Model
             $q->where('id', $id);
         });
     }
+
+    public function scopeOwn($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
 }

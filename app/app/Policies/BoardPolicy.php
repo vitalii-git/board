@@ -31,7 +31,7 @@ class BoardPolicy
      */
     public function view(User $user, Board $board)
     {
-        return $user->id === $board->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $board->user_id;
     }
 
     /**
@@ -54,7 +54,7 @@ class BoardPolicy
      */
     public function update(User $user, Board $board)
     {
-        return $user->id === $board->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $board->user_id;
     }
 
     /**
@@ -66,7 +66,7 @@ class BoardPolicy
      */
     public function delete(User $user, Board $board)
     {
-        return $user->id === $board->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $board->user_id;
     }
 
     /**

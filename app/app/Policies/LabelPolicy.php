@@ -31,7 +31,7 @@ class LabelPolicy
      */
     public function view(User $user, Label $label)
     {
-        return $user->id === $label->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $label->user_id;
     }
 
     /**
@@ -54,7 +54,7 @@ class LabelPolicy
      */
     public function update(User $user, Label $label)
     {
-        return $user->id === $label->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $label->user_id;
     }
 
     /**
@@ -66,7 +66,7 @@ class LabelPolicy
      */
     public function delete(User $user, Label $label)
     {
-        return $user->id === $label->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $label->user_id;
     }
 
     /**

@@ -5,95 +5,96 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Task\IndexRequest;
 use App\Http\Requests\Task\StoreRequest;
 use App\Http\Requests\Task\UpdateRequest;
-use App\Http\Resources\Task\ShowResource;
-use App\Http\Resources\Task\StoreResource;
-use App\Http\Resources\Task\IndexResource;
-use App\Http\Resources\Task\UpdateResource;
-use App\Interfaces\Repositories\TaskRepositoryInterface;
+use App\Http\Resources\Task\TaskCollection;
+use App\Http\Resources\Task\TaskResource;
+use App\Services\TaskService;
+use App\Task;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    private $taskRepository;
+    private $taskService;
 
-    public function __construct(TaskRepositoryInterface $taskRepository)
+    public function __construct(TaskService $taskService)
     {
-        $this->taskRepository = $taskRepository;
+        $this->taskService = $taskService;
     }
 
     /**
      * Display a listing of the resource.
      *
      * @param IndexRequest $request
-     * @return IndexResource
+     * @return TaskCollection
      */
     public function index(IndexRequest $request)
     {
         $data = $request->validated();
-        $tasks = $this->taskRepository->index($data);
+        $tasks = $this->taskService->index($data);
 
-        return new IndexResource($tasks);
+        return new TaskCollection($tasks);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param StoreRequest $request
-     * @return StoreResource
+     * @return TaskResource
      */
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $task = $this->taskRepository->store($data);
+        $task = $this->taskService->store($data);
 
-        return new StoreResource($task);
+        return new TaskResource($task);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return ShowResource
+     * @param Request $request
+     * @param Task $task
+     * @return TaskResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($id)
+    public function show(Request $request, Task $task)
     {
-        $task = $this->taskRepository->show($id);
+        $this->authorize('view', $task);
+        $task = $this->taskService->show($task->id);
 
-        return new ShowResource($task);
+        return new TaskResource($task);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateRequest $request
-     * @param int $id
-     * @return UpdateResource
+     * @param Task $task
+     * @return TaskResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, Task $task)
     {
-        try {
-            $data = $request->validated();
-            $task = $this->taskRepository->update($data, $id);
+        $this->authorize('update', $task);
+        $data = $request->validated();
+        $task = $this->taskService->update($data, $task->id);
 
-            return new UpdateResource($task);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
-        }
+        return new TaskResource($task);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param Task $task
      * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(Request $request, Task $task)
     {
-        try {
-            $this->taskRepository->destroy($id);
-            return response()->json(['message' => 'Task was deleted']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
-        }
+        $this->authorize('delete', $task);
+        $this->taskService->destroy($task->id);
+
+        return response()->json(['message' => 'Task was deleted']);
     }
 }

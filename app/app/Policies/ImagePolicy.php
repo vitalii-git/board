@@ -66,7 +66,7 @@ class ImagePolicy
      */
     public function delete(User $user, Image $image)
     {
-        return $user->id === $image->user_id ? Response::allow() : Response::deny('Access denied');
+        return $user->id === $image->user_id;
     }
 
     /**

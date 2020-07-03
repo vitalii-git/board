@@ -2,94 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use App\Board;
 use App\Http\Requests\Board\StoreRequest;
 use App\Http\Requests\Board\UpdateRequest;
-use App\Http\Resources\Board\IndexResource;
-use App\Http\Resources\Board\ShowResource;
-use App\Http\Resources\Board\StoreResource;
-use App\Http\Resources\Board\UpdateResource;
-use App\Interfaces\Repositories\BoardRepositoryInterface;
+use App\Http\Resources\Board\BoardCollection;
+use App\Http\Resources\Board\BoardResource;
+use App\Services\BoardService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class BoardController extends Controller
 {
-    private $boardRepository;
+    private $boardService;
 
-    public function __construct(BoardRepositoryInterface $boardRepository)
+    public function __construct(BoardService $boardService)
     {
-        $this->boardRepository = $boardRepository;
+        $this->boardService = $boardService;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return IndexResource
+     * @return BoardCollection
      */
     public function index()
     {
-        $boards = $this->boardRepository->index();
+        $boards = $this->boardService->index();
 
-        return new IndexResource($boards);
+        return new BoardCollection($boards);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param StoreRequest $request
-     * @return StoreResource
+     * @return BoardResource
      */
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $board = $this->boardRepository->store($data);
+        $board = $this->boardService->store($data);
 
-        return new StoreResource($board);
+        return new BoardResource($board);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return ShowResource
+     * @param Request $request
+     * @param Board $board
+     * @return BoardResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($id)
+    public function show(Request $request, Board $board)
     {
-        $board = $this->boardRepository->show($id);
+        $this->authorize('view', $board);
+        $board = $this->boardService->show($board->id);
 
-        return new ShowResource($board);
+        return new BoardResource($board);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateRequest $request
-     * @param int $id
-     * @return UpdateResource
+     * @param Board $board
+     * @return BoardResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, Board $board)
     {
-        try {
-            $data = $request->validated();
-            $board = $this->boardRepository->update($data, $id);
-            return new UpdateResource($board);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
-        }
+        $this->authorize('update', $board);
+
+        $data = $request->validated();
+        $board = $this->boardService->update($data, $board->id);
+
+
+        return new BoardResource($board);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param Board $board
      * @return JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(Request $request, Board $board)
     {
-        try {
-            $this->boardRepository->destroy($id);
-            return response()->json(['message' => 'Board was deleted']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
-        }
+        $this->authorize('delete', $board);
+
+        $this->boardService->destroy($board->id);
+
+        return response()->json(['message' => 'Board was deleted']);
     }
 }

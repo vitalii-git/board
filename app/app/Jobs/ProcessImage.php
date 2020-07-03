@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Interfaces\Repositories\ImageRepositoryInterface;
+use App\Services\ImageService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,20 +13,20 @@ class ProcessImage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $imageRepository;
+    private $imageService;
     private $data;
     private $file;
 
     /**
      * Create a new job instance.
      *
-     * @param ImageRepositoryInterface $imageRepository
+     * @param ImageService $imageService
      * @param array $data
      * @param $file
      */
-    public function __construct(ImageRepositoryInterface $imageRepository, array $data, $file)
+    public function __construct(ImageService $imageService, array $data, $file)
     {
-        $this->imageRepository = $imageRepository;
+        $this->imageService = $imageService;
         $this->data = $data;
         $this->file = $file;
     }
@@ -38,6 +38,6 @@ class ProcessImage implements ShouldQueue
      */
     public function handle()
     {
-        $this->imageRepository->store($this->data, $this->file);
+        $this->imageService->store($this->data, $this->file);
     }
 }

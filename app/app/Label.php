@@ -10,4 +10,9 @@ class Label extends Model
         'name',
         'user_id'
     ];
+
+    public function scopeOwn($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
 }
